@@ -2,10 +2,9 @@ import sys
 import argparse
 import urllib.request
 
-
-def partition(bigstr,sep1,sep2):
- x=bigstr.rpartition(sep1)
- y=x[2].rpartition(sep2)
+def xpartition(bigstr,sep1,sep2):
+ x=bigstr.partition(sep1)
+ y=x[2].partition(sep2)
  return y[0]
 
 fb_parse = argparse.ArgumentParser(prog='FBVids', description="This script downloads Facebook videos.")
@@ -18,22 +17,25 @@ if('facebook.com/' in userurl):
 else:
  raise ValueError('Check URL.')
 
-fbsrc = urllib.request.Request(cleanurl, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0", "Accept": "*/*", "Accept-Language": "en-US,en;q=0.5", "Referer": "https://www.facebook.com/", "Origin": "https://www.facebook.com", "DNT": "1", "Connection": "keep-alive", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "cross-site"}) 
-
-with urllib.request.urlopen(fbsrc) as fbdata:
- fbstr=str(fbdata.read())
+fbsrc = urllib.request.Request(cleanurl, headers={"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8", "Accept-Language": "en-US,en;q=0.5", "DNT": "1", "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "cross-site","Sec-Fetch-User": "?1","Upgrade-Insecure-Requests": "1","User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0"}) 
+with urllib.request.urlopen(fbsrc) as fbdata1:
+ fbstr1=str(fbdata1.read())
 
 try:
- fbstr.index('hd_src:')
+ fbstr.index('playable_url')
 except ValueError:
  print('Check URL.')
 
-mediastr = partition(fbstr,'hd_src:',',hd_tag:')     
+mediastr = xpartition(fbstr1,'"playable_url":',',"spherical_video_fallback_urls')
 medialist = mediastr.split('"')
-vidurl= medialist[1]
-filename=partition(vidurl,'/','?')
+if (':null' in medialist) or ('_nc_vs' in medialist[5]):
+ vidurl = medialist[1].replace('\\','')
+else:
+ vidurl = medialist[5].replace('\\','')
+ 
+filename = xpartition(vidurl,'/','?')
 
-vidreq = urllib.request.Request(vidurl, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0", "Accept": "*/*", "Accept-Language": "en-US,en;q=0.5", "Referer": "https://www.facebook.com/", "Origin": "https://www.facebook.com", "DNT": "1", "Connection": "close", "Sec-Fetch-Dest": "empty", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Site": "cross-site"})
+vidreq = urllib.request.Request(vidurl, headers={"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8", "Accept-Language": "en-US,en;q=0.5", "DNT": "1", "Sec-Fetch-Dest": "document", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Site": "cross-site","Sec-Fetch-User": "?1","Upgrade-Insecure-Requests": "1","User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0"})
 with urllib.request.urlopen(vidreq) as vidobj:
  vidata=vidobj.read()
 with open(filename,'wb') as vid:
