@@ -25,6 +25,7 @@ try:
  fbstr.index('playable_url')
 except ValueError:
  print('Check URL.')
+ exit()
 
 mediastr = xpartition(fbstr,'"playable_url":',',"spherical_video_fallback_urls')
 medialist = mediastr.split('"')
