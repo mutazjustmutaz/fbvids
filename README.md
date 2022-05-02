@@ -1,13 +1,15 @@
 
   This is a script that downloads Facebook videos. The script relies on nothing beyond 3 standard libraries, which means that it requires no installation of any additional library or software. As long as Python is installed on your PC, you're ready to go.
 
-Usage:
+#### Usage:
 
+```
 python fbvids.py "URL"
+```
 
 (The double quotes are necessary to prevent the shell from chopping up URLs with ampersands)
 
-Notes:
+#### Notes:
 
 _If available, the HD version of the video is downloaded by default. 
 
