@@ -1,4 +1,6 @@
 
+EDIT: It seems like FB has changed its code again, and as a result this script isn't really useful anymore. I'll rewrite the script as soon as I get to it on my to-do list.
+
   This is a script that downloads Facebook videos. The script relies on nothing beyond 3 standard libraries, which means that it requires no installation of any additional library or software. As long as Python is installed on your PC, you're ready to go.
 
 #### Usage:
